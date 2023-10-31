@@ -1,4 +1,5 @@
 #include "flappy.h"
+#include <EEPROM.h>
 
 /**
    Nano Bird - a flappy bird clone for arduino nano, oled screen & push on switch
@@ -94,7 +95,7 @@ void flappyLoop() {
         score++;
 
         // highscore is whichever is bigger, the current high score or the current score
-        high_score = max(score, high_score);
+        // high_score = max(score, high_score);
       }
 
       // if the bird is level with the wall and not level with the gap - game over!
@@ -125,6 +126,13 @@ void flappyLoop() {
     delay(GAME_SPEED);
   }
   else {
+    EEPROM.get(0, high_score);
+    
+    if (score > high_score) {
+      EEPROM.put(0, score);
+      EEPROM.commit();
+    }
+
     outlineTextAtCenter(1, "Flappy MaoMao");
     
     textAtCenter(display.height() / 2 - 8, "Tap to start");

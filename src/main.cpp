@@ -5,6 +5,7 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
+#include <EEPROM.h>
 #include "sleep.h"
 #include "blink.h"
 #include "pet.h"
@@ -14,7 +15,6 @@
 #include "sideeyes.h"
 #include "study.h"
 #include "memes.h"
-#include <EEPROM.h>
 #include "flappy.h"
 
 #define MENU_BLINK 0
@@ -108,11 +108,16 @@ void IRAM_ATTR IRQHandler() {
 void setup() {
   Serial.begin(9600);
 
+  // Setup EEPROM
+  EEPROM.begin(4);
+
   // Random number generator
   randomSeed(analogRead(A0));
 
-  // Setup oled
+  // Touch interrupt handler
   attachInterrupt(digitalPinToInterrupt(D5), IRQHandler, CHANGE);
+
+  // Setup oled
   if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
     for (;;)
       ;
